@@ -15,3 +15,15 @@ develop gpt youtube summarize logic for 2024 skku graduate evaluation
 한 번의 요청 내에 모든 스크립트를 담지 못하는 경우가 있다. (Script Size > Model Context Size) 따라서 이를 분할하는 로직을 적용하였는데
 
 현 버전에서는 Naive하게 글자수로 분할한다. 추후 개발에서 이를 잘 분할할 수 있는 여러 방안을 탐구하여 적용할 예정이다.
+
+
+## Recursive Version (24. 08. 25)
+LangChain의 RecursiveCharacterTextSplitter 메소드를 활용한 텍스트 분할 로직을 추가하였다.
+
+
+## spaCy Version (24. 08. 28)
+spaCy Tokenizer를 기반으로 텍스트를 분할하는 로직을 추가하였다.
+
+## Compressive Summarization (24. 09. 02)
+단계적으로 압축하는 로직을 개발하였다.
+
