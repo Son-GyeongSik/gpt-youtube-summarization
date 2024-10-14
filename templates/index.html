@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <title>GPT YOUTUBE SUMMARIZER</title>
+
+    <script>
+
+        function renderMarkdown(summary) {
+            const renderHtml = marked.parse(summary)
+            document.getElementById("summary_field").innerHTML = renderHtml
+        }
+
+        $(document).ready(function () {
+
+            renderMarkdown("")
+
+            $("#submit").click(function (event) {
+
+                var url = $("#input_url").val();
+                const urlParams = new URL(url).searchParams;
+                var code = urlParams.get("v");
+                console.log(url)
+                console.log(code)
+
+                const iframe = `<iframe width="1120" height="630" src="https://www.youtube.com/embed/${code}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
+                console.log(iframe)
+                document.getElementById("video_field").innerHTML = iframe
+
+                $.ajax({
+                    url: "/summary/"+"?code="+code,
+                    type: "get",
+                    contentType: "application/json",
+                    success: renderMarkdown
+                })
+            })
+        })
+    </script>
+</head>
+<body style="margin: 0px; min-height: 100%;">
+
+    <div id="content" style="width: 100%; height: auto; min-height: 100%; padding-bottom: 100px">
+        <div style="width: 100%; height: 300px; padding-top: 5%; background-image: url(../static/src/img/virtual-2970359_1280.jpg); text-align: center" >
+            <h1 style="margin: 0 auto; text-align: center; color: #ffffff">GPT YOUTUBE SUMMARY</h1>
+            <h3 style="margin: 0 auto; text-align: center; color: #ffffff">2024 SKKU GRADUATE PROJECT</h3>
+            <br><br>
+            <input type="text" id="input_url" style="height: 50px; width: 500px; border-radius: 25px 0px 0px 25px; padding-left: 20px; font-size: 15px" placeholder="INPUT URL" required>
+            <button id="submit" style="height: 56px; width: 100px; border-radius: 0px 28px 28px 0px; background-color: midnightblue; color: white;">
+                    <span>SUBMIT</span>
+            </button>
+        </div>
+
+        <div style="width: 100%; min-height: 100%; padding: 50px 30px; text-align: center">
+            <div id="video_field" style="width: 100%; align-content: center"></div>
+            <div id="summary_field" style="width: 1120; text-align: left" ></div>
+        </div>
+    </div>
+
+
+
+    <footer style="height: 100px; position: relative; transform: translateY(0%); background-color: gray; display: flex">
+        <div style="padding: 40px">
+            <span>Create By Son-GyeongSik</span>
+        </div>
+    </footer>
+</body>
+
+</html>

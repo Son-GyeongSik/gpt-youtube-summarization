@@ -1,22 +1,53 @@
+from fastapi.templating import Jinja2Templates
+
 from script import *
 from summary import *
+from fastapi import FastAPI, Request, Depends
+from fastapi.staticfiles import StaticFiles
+import uvicorn
+import crud
+from model import Base, Summary
+from database import SessionLocal, engine
+from sqlalchemy.orm import Session
+
+Base.metadata.create_all(bind=engine)
+
+def get_db():
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
+
+templates = Jinja2Templates(directory="templates")
+
+app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-async def root():
+@app.get("/")
+def index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
-    print("Please Input Youtube Code : ")
-    url = input()
 
-    print("Please Input Summary Mode (1: Normal, 2: Compress")
-    summary_mode = int(input())
+@app.get("/summary")
+async def summary(request: Request, db: Session = Depends(get_db), code: str = ""):
 
-    print("Please Input Divide Mode (1: Naive, 2:RCTS, 3:SPACY) : ")
-    mode = int(input())
+    summary_schema = crud.db_get_summary(db, code)
+
+    if summary_schema:
+        return summary_schema.summary
+
+    summary = await root(code)
+    crud.db_add_summary(db, summary, code)
+    return summary
+
+
+async def root(code: str, summary_mode: int = 1, mode: int = 3):
 
     script = Script()
-    get_script(script, url)
-
-    print(script.text)
+    get_script(script, code)
 
     if summary_mode == 1:
         summary = await generate_summary(script.text, mode)
@@ -24,8 +55,7 @@ async def root():
     elif summary_mode == 2:
         summary = await generate_compress_summary(script.text, mode)
 
-    print(summary)
+    return summary
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(root())
+    uvicorn.run(app, host='0.0.0.0', port=80)

@@ -5,6 +5,7 @@ from gpt import *
 
 async def generate_summary(script: str, mode: int):
 
+    script = preprocess_script(script)
     chunks = []
 
     if mode == 1:
@@ -74,7 +75,6 @@ def recursive_divide(scripts: str):
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size = 3000, chunk_overlap = 50, length_function = len, is_separator_regex = False)
     chunks = text_splitter.split_text(scripts)
-    print(chunks)
 
     return chunks
 
@@ -82,7 +82,6 @@ def spacy_divide(scripts: str):
 
     text_splitter = SpacyTextSplitter(chunk_size = 3000, chunk_overlap = 50)
     chunks = text_splitter.split_text(scripts)
-    print(chunks)
 
     return chunks
 
