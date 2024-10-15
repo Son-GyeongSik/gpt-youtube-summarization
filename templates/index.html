@@ -20,13 +20,19 @@
 
             $("#submit").click(function (event) {
 
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: "smooth"
+                })
+
+                document.getElementById("summary_field").innerHTML = "";
                 var url = $("#input_url").val();
                 const urlParams = new URL(url).searchParams;
                 var code = urlParams.get("v");
                 console.log(url)
                 console.log(code)
 
-                const iframe = `<iframe width="1120" height="630" src="https://www.youtube.com/embed/${code}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
+                const iframe = `<iframe width="900" height="500" src="https://www.youtube.com/embed/${code}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
                 console.log(iframe)
                 document.getElementById("video_field").innerHTML = iframe
 
@@ -43,7 +49,7 @@
 <body style="margin: 0px; min-height: 100%;">
 
     <div id="content" style="width: 100%; height: auto; min-height: 100%; padding-bottom: 100px">
-        <div style="width: 100%; height: 300px; padding-top: 5%; background-image: url(../static/src/img/virtual-2970359_1280.jpg); text-align: center" >
+        <div style="width: 100%; height: 250px; padding-top: 5%; background-image: url(../static/src/img/virtual-2970359_1280.jpg); text-align: center" >
             <h1 style="margin: 0 auto; text-align: center; color: #ffffff">GPT YOUTUBE SUMMARY</h1>
             <h3 style="margin: 0 auto; text-align: center; color: #ffffff">2024 SKKU GRADUATE PROJECT</h3>
             <br><br>
@@ -54,8 +60,8 @@
         </div>
 
         <div style="width: 100%; min-height: 100%; padding: 50px 30px; text-align: center">
-            <div id="video_field" style="width: 100%; align-content: center"></div>
-            <div id="summary_field" style="width: 1120; text-align: left" ></div>
+            <div id="video_field" style="width: 58%; height: 500px; float: left; align-content: center"></div>
+            <div id="summary_field" style="width: 32%; height: 500px; padding: 5px; overflow: scroll; display: inline-block; text-align: left; border: 1px solid gray; border-radius: 5px" ></div>
         </div>
     </div>
 
