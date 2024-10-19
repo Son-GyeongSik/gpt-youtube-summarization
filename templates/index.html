@@ -9,32 +9,62 @@
 
     <script>
 
+        var code = ""
+
         function renderMarkdown(summary) {
             const renderHtml = marked.parse(summary)
             document.getElementById("summary_field").innerHTML = renderHtml
         }
 
+        function renderVideo(code, width, height) {
+            const iframe = `<iframe width=${width} height=${height} src="https://www.youtube.com/embed/${code}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+            console.log(iframe);
+            document.getElementById("video_field").innerHTML = iframe;
+        }
+
+        function resizeContent() {
+
+            const content = document.getElementById("content_field");
+            const video_field = document.getElementById("video_field");
+            const summary_field = document.getElementById("summary_field");
+
+            const content_width = content.offsetWidth;
+
+            const video_width = content_width * 0.5;
+            const video_height = video_width * 5 / 9;
+
+            const summary_width = content_width * 0.4;
+
+            video_field.style.width = video_width + 'px';
+            video_field.style.height = video_height + 'px';
+
+            summary_field.style.width = summary_width + 'px';
+            summary_field.style.height = video_height + 'px';
+
+            console.log(code)
+
+            if (code.length > 0) {
+                renderVideo(code, video_width, video_height);
+            }
+        }
+
         $(document).ready(function () {
 
-            renderMarkdown("")
+            window.addEventListener("load", resizeContent);
+            window.addEventListener("resize", resizeContent);
 
             $("#submit").click(function (event) {
-
+                renderMarkdown("### 생성중입니다")
                 window.scrollTo({
                     top: document.body.scrollHeight,
                     behavior: "smooth"
                 })
 
-                document.getElementById("summary_field").innerHTML = "";
                 var url = $("#input_url").val();
                 const urlParams = new URL(url).searchParams;
-                var code = urlParams.get("v");
-                console.log(url)
-                console.log(code)
+                code = urlParams.get("v");
 
-                const iframe = `<iframe width="900" height="500" src="https://www.youtube.com/embed/${code}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
-                console.log(iframe)
-                document.getElementById("video_field").innerHTML = iframe
+               resizeContent()
 
                 $.ajax({
                     url: "/summary/"+"?code="+code,
@@ -43,6 +73,8 @@
                     success: renderMarkdown
                 })
             })
+
+
         })
     </script>
 </head>
@@ -59,9 +91,9 @@
             </button>
         </div>
 
-        <div style="width: 100%; min-height: 100%; padding: 50px 30px; text-align: center">
-            <div id="video_field" style="width: 58%; height: 500px; float: left; align-content: center"></div>
-            <div id="summary_field" style="width: 32%; height: 500px; padding: 5px; overflow: scroll; display: inline-block; text-align: left; border: 1px solid gray; border-radius: 5px" ></div>
+        <div id="content_field" style="width: 100%; min-height: 100%; padding: 50px 30px; text-align: center">
+            <div id="video_field" style="float: left; align-content: center"></div>
+            <div id="summary_field" style="padding: 5px; overflow: scroll; display: inline-block; text-align: left; border: 1px solid gray; border-radius: 5px" ></div>
         </div>
     </div>
 
